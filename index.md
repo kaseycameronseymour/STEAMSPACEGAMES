@@ -1,134 +1,35 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
-<html xmlns="http://www.w3.org/1999/xhtml"> 
-<head> 
-<title></title> 
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+<!DOCTYPE html>
+<html>
+  <head>
+        <title>City of Austin - Libraries</title>
+        <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.css" />
+        <script src="http://cdn.leafletjs.com/leaflet-0.7.2/leaflet.js"></script>
+        <script src="http://code.jquery.com/jquery-1.10.2.min.js"></script>
+        <style>
+        body {padding: 0; margin: 0 }
+        html, body, #map { height: 100% }
+        </style>
+  </head>
 
-<link rel="stylesheet" href="/maps/leaflet/dist/leaflet.css" />
-<link rel="stylesheet" href="../src/leaflet-locationpicker.css" />
-<link rel="stylesheet" href="style.css" />
-<style type="text/css">
-form {
-	margin: 20px;
-	padding: 20px;
-	background: #eee;
-	float: left;
-	min-height: 160px;
-	min-width: 400px
-}
-input {
-	margin: 5px 0;
-}
-</style>
-</head>
+  <body>
+        <div id="map"></div>
+        <script type ="text/javascript">
+        var basemap = L.tileLayer(
+                'http://{s}.tiles.mapbox.com/v3/sarasafavi.hjegnofh/{z}/{x}/{y}.png',
+                                  {     maxZoom: 18     });
 
-<body>
-<h3><a href="../"><big>◄</big> Leaflet Location Picker</a></h3>
+        $.getJSON('libraries.json', function(data) {
+                var geojson = L.geoJson(data, {
+                  onEachFeature: function (feature, layer) {
+                          layer.bindPopup(feature.properties.NAME + '<br />'
+                                                        + feature.properties.ADDRESS);
+                  }
+                });
+        var map = L.map('map').setView([30.260, -97.770], 12);
+        basemap.addTo(map);
+        geojson.addTo(map);
+        });
 
-<h4>Simple Example: <em></em></h4>
-
-<form id="insert">
-	<label>Insert new geographic location:</label><br />
-	<input class="geolocs" type="text" value="" size="20" />
-<pre>
-
-$('.geolocs').leafletLocationPicker();
-
-</pre>
-</form>
-
-<form id="default">
-	Change default geographic location: <br />
-	<input class="geolocs" type="text" value="17.9787,81.0352" size="20" />
-</form>
-
-<form id="format">
-	Custom location format: <br />
-	<input id="geoloc2" type="text" value="" size="20" /> <br />
-<pre>
-$('#geoloc2').leafletLocationPicker({
-	locationFormat: '{lat}@{lng}#WGS84',
-	layer: 'SAT',
-	position: 'bottomleft'
-});
-</pre>	
-</form>
-
-<form id="callback">
-	Custom callback: <br />
-	<input id="geoloc4" type="text" value="" size="20" />
-	<br /><br />
-	<i>Value from callback:</i><br />
-	<em style="color:blue"></em><br />
-<pre>
-$('#geoloc4').leafletLocationPicker(function(e) {
-	$(this).siblings('em').text(e.location);
-});
-</pre>
-</form>
-
-<form id="events">
-	Events: <em style="color:red"></em><br />
-	<input id="geoloc3" type="text" value="" size="20" />
-	<br />
-	<br /><input id="geolat" type="text" value="" size="20" />
-	<br /><input id="geolng" type="text" value="" size="20" />
-	<br /><i>string location</i><br />
-<pre>
-$('#geoloc3').leafletLocationPicker({
-	locationSep: ' - '
-})
-.on('show', function(e) {
-	$(this).siblings('em').text('click on map for insert the location');
-})
-.on('hide', function(e) {
-	$(this).siblings('em').text('');
-})
-.on('changeLocation', function(e) {
-	$(this)
-	.siblings('#geolat').val( e.latlng.lat )
-	.siblings('#geolng').val( e.latlng.lng )
-	.siblings('i').text('"'+e.location+'"');	
-});	
-</pre>
-</form>
-
-<script src="/maps/leaflet/dist/leaflet-src.js"></script>
-<script src="/js/jquery-2.1.1.min.js"></script>
-<script src="../src/leaflet-locationpicker.js"></script>
-<script>
-//multiple istances
-$('.geolocs').leafletLocationPicker();
-//custom location format
-$('#geoloc2').leafletLocationPicker({
-	locationFormat: '{lat}@{lng}#WGS84',
-	position: 'bottomleft',
-	layer: 'SAT'	
-});
-//events
-$('#geoloc3').leafletLocationPicker({
-		locationSep: ' - '
-	})
-	.on('show', function(e) {
-		$(this).siblings('em').text('click on map for insert the location');
-	})
-	.on('hide', function(e) {
-		$(this).siblings('em').text('');
-	})
-	.on('changeLocation', function(e) {
-		$(this)
-		.siblings('#geolat').val( e.latlng.lat )
-		.siblings('#geolng').val( e.latlng.lng )
-		.siblings('i').text('"'+e.location+'"');	
-	});
-//callback
-$('#geoloc4').leafletLocationPicker(function(e) {
-	$(this).siblings('em').text(e.location);
-});
-</script>
-
-<div id="copy"><a href="http://labs.easyblog.it/">Labs</a> &bull; <a rel="author" href="http://labs.easyblog.it/stefano-cudini/">Stefano Cudini</a></div>
-
-<script src="/labs-common.js"></script>
-</body>
+  </script>
+ </body>
 </html>
