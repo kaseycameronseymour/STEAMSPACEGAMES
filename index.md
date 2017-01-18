@@ -1,34 +1,134 @@
-<?php
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"> 
+<html xmlns="http://www.w3.org/1999/xhtml"> 
+<head> 
+<title></title> 
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
 
-    require_once "vendor/autoload.php";
-    use Twilio\Rest\Client;
-    
-    // Step 2: set our AccountSid and AuthToken from https://twilio.com/console
-    $AccountSid = "AC653c68afd3a74df7c00307fc7f2e8ab9";
-    $AuthToken = "47e334d3d282c1bb5d3befa2a3ff743b";
-    // Step 3: instantiate a new Twilio Rest Client
-    $client = new Client($AccountSid, $AuthToken);
-    // Step 4: make an array of people we know, to send them a message. 
-    // Feel free to change/add your own phone number and name here.
-    $people = array(
-        "+16232951474" => "Kasey Seymour",
-       
-    );
-    // Step 5: Loop over all our friends. $number is a phone number above, and 
-    // $name is the name next to it
-    foreach ($people as $number => $name) {
-        $sms = $client->account->messages->create(
-            // the number we are sending to - Any phone number
-            $number,
-            array(
-                // Step 6: Change the 'From' number below to be a valid Twilio number 
-                // that you've purchased
-                'from' => "+17082610204 ", 
-                
-                // the sms body
-                'body' => "Hey $name, Monkey Party at 6PM. Bring Bananas!"
-            )
-        );
-        // Display a confirmation message on the screen
-        echo "Sent message to $name";
-    }
+<link rel="stylesheet" href="/maps/leaflet/dist/leaflet.css" />
+<link rel="stylesheet" href="../src/leaflet-locationpicker.css" />
+<link rel="stylesheet" href="style.css" />
+<style type="text/css">
+form {
+	margin: 20px;
+	padding: 20px;
+	background: #eee;
+	float: left;
+	min-height: 160px;
+	min-width: 400px
+}
+input {
+	margin: 5px 0;
+}
+</style>
+</head>
+
+<body>
+<h3><a href="../"><big>◄</big> Leaflet Location Picker</a></h3>
+
+<h4>Simple Example: <em></em></h4>
+
+<form id="insert">
+	<label>Insert new geographic location:</label><br />
+	<input class="geolocs" type="text" value="" size="20" />
+<pre>
+
+$('.geolocs').leafletLocationPicker();
+
+</pre>
+</form>
+
+<form id="default">
+	Change default geographic location: <br />
+	<input class="geolocs" type="text" value="17.9787,81.0352" size="20" />
+</form>
+
+<form id="format">
+	Custom location format: <br />
+	<input id="geoloc2" type="text" value="" size="20" /> <br />
+<pre>
+$('#geoloc2').leafletLocationPicker({
+	locationFormat: '{lat}@{lng}#WGS84',
+	layer: 'SAT',
+	position: 'bottomleft'
+});
+</pre>	
+</form>
+
+<form id="callback">
+	Custom callback: <br />
+	<input id="geoloc4" type="text" value="" size="20" />
+	<br /><br />
+	<i>Value from callback:</i><br />
+	<em style="color:blue"></em><br />
+<pre>
+$('#geoloc4').leafletLocationPicker(function(e) {
+	$(this).siblings('em').text(e.location);
+});
+</pre>
+</form>
+
+<form id="events">
+	Events: <em style="color:red"></em><br />
+	<input id="geoloc3" type="text" value="" size="20" />
+	<br />
+	<br /><input id="geolat" type="text" value="" size="20" />
+	<br /><input id="geolng" type="text" value="" size="20" />
+	<br /><i>string location</i><br />
+<pre>
+$('#geoloc3').leafletLocationPicker({
+	locationSep: ' - '
+})
+.on('show', function(e) {
+	$(this).siblings('em').text('click on map for insert the location');
+})
+.on('hide', function(e) {
+	$(this).siblings('em').text('');
+})
+.on('changeLocation', function(e) {
+	$(this)
+	.siblings('#geolat').val( e.latlng.lat )
+	.siblings('#geolng').val( e.latlng.lng )
+	.siblings('i').text('"'+e.location+'"');	
+});	
+</pre>
+</form>
+
+<script src="/maps/leaflet/dist/leaflet-src.js"></script>
+<script src="/js/jquery-2.1.1.min.js"></script>
+<script src="../src/leaflet-locationpicker.js"></script>
+<script>
+//multiple istances
+$('.geolocs').leafletLocationPicker();
+//custom location format
+$('#geoloc2').leafletLocationPicker({
+	locationFormat: '{lat}@{lng}#WGS84',
+	position: 'bottomleft',
+	layer: 'SAT'	
+});
+//events
+$('#geoloc3').leafletLocationPicker({
+		locationSep: ' - '
+	})
+	.on('show', function(e) {
+		$(this).siblings('em').text('click on map for insert the location');
+	})
+	.on('hide', function(e) {
+		$(this).siblings('em').text('');
+	})
+	.on('changeLocation', function(e) {
+		$(this)
+		.siblings('#geolat').val( e.latlng.lat )
+		.siblings('#geolng').val( e.latlng.lng )
+		.siblings('i').text('"'+e.location+'"');	
+	});
+//callback
+$('#geoloc4').leafletLocationPicker(function(e) {
+	$(this).siblings('em').text(e.location);
+});
+</script>
+
+<div id="copy"><a href="http://labs.easyblog.it/">Labs</a> &bull; <a rel="author" href="http://labs.easyblog.it/stefano-cudini/">Stefano Cudini</a></div>
+
+<script src="/labs-common.js"></script>
+</body>
+</html>
