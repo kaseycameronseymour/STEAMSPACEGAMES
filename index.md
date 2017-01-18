@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html>
   <head>
         <title>City of Austin - Libraries</title>
